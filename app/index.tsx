@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Image, StyleSheet, TextInput, Text, View } from 'react-native';
+import { Image, StyleSheet, TextInput, Text, View, Button } from 'react-native';
 
 
 export default function HomeScreen() {
@@ -53,7 +53,7 @@ export default function HomeScreen() {
         <TextInput
           value={values.cardName}
           onChangeText={(text) => handleChange('cardName', text)}
-          keyboardType="default"
+          keyboardType="numeric"
           style={[
             styles.textInput,
             { borderColor: focusedInput === 'cardName' ? 'blue' : '#ababab' },
@@ -90,6 +90,7 @@ export default function HomeScreen() {
           onFocus={() => handleFocus('expDate')}
           onBlur={handleBlur}
         />
+
         <Text style={styles.textLabel}>
           CVV
         </Text>
@@ -103,6 +104,9 @@ export default function HomeScreen() {
           ]}
           onFocus={() => handleFocus('cvv')}
           onBlur={handleBlur}
+        />
+        <Button
+          title="Submit"
         />
       </View>
     </View>
