@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Image, StyleSheet, TextInput, Text, View, Animated, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { Image, StyleSheet, TextInput, Text, View, Animated, TouchableWithoutFeedback, Keyboard, Button } from 'react-native';
 
 export default function HomeScreen() {
   const [values, setValues] = useState({
@@ -12,14 +12,14 @@ export default function HomeScreen() {
   const [focusedInput, setFocusedInput] = useState(null);
   const [isCardFlipped, setIsCardFlipped] = useState(false);
 
-  const handleChange = (inputName: string, text: string) => {
+  const handleChange = (inputName, text) => {
     setValues((prevValues) => ({
       ...prevValues,
-      [inputName]: text.replace(/[^0-9]/g, ''),
+      [inputName]: inputName === 'cardName' ? text : text.replace(/[^0-9]/g, ''),
     }));
   };
 
-  const handleFocus = (inputName: string) => {
+  const handleFocus = (inputName) => {
     setFocusedInput(inputName);
     if (inputName === 'cvv') {
       setIsCardFlipped(true);
@@ -71,7 +71,7 @@ export default function HomeScreen() {
           <Text style={styles.textLabel}>Card Name</Text>
           <TextInput
             value={values.cardName}
-            onChangeText={(text) => setValues((prevValues) => ({ ...prevValues, cardName: text }))}
+            onChangeText={(text) => handleChange('cardName', text)}
             style={[
               styles.textInput,
               { borderColor: focusedInput === 'cardName' ? 'blue' : '#ababab' },
@@ -127,6 +127,8 @@ export default function HomeScreen() {
             onBlur={handleBlur}
           />
         </View>
+
+        <Button title="Submit" onPress={() => console.log('Form submitted:', values)} />
       </View>
     </TouchableWithoutFeedback>
   );
