@@ -107,54 +107,56 @@ export default function HomeScreen() {
             onBlur={handleBlur}
           />
         </View>
+        <View style={styles.row}>
+          <View style={styles.doubleStepContainer}>
+            <Text style={styles.textLabel}>Expiration Date</Text>
+            <View style={styles.row}>
+              <TextInput
+                value={values.expMonth}
+                onChangeText={(text) => handleChange('expMonth', text)}
+                keyboardType="numeric"
+                placeholder="MM"
+                style={[
+                  styles.textInput,
+                  styles.smallInput,
+                  { borderColor: focusedInput === 'expMonth' ? 'blue' : '#ababab' },
+                ]}
+                onFocus={() => handleFocus('expMonth')}
+                onBlur={handleBlur}
+              />
+              <TextInput
+                value={values.expYear}
+                onChangeText={(text) => handleChange('expYear', text)}
+                keyboardType="numeric"
+                placeholder="YY"
+                style={[
+                  styles.textInput,
+                  styles.smallInput,
+                  { borderColor: focusedInput === 'expYear' ? 'blue' : '#ababab' },
+                ]}
+                onFocus={() => handleFocus('expYear')}
+                onBlur={handleBlur}
+              />
+            </View>
+          </View>
 
-        <View style={styles.stepContainer}>
-          <Text style={styles.textLabel}>Expiration Date</Text>
-          <View style={styles.row}>
+          <View style={styles.doubleStepContainer}>
+            <Text style={styles.textLabel}>CVV</Text>
             <TextInput
-              value={values.expMonth}
-              onChangeText={(text) => handleChange('expMonth', text)}
+              value={values.cvv}
+              onChangeText={(text) => handleChange('cvv', text)}
               keyboardType="numeric"
-              placeholder="MM"
               style={[
                 styles.textInput,
-                styles.smallInput,
-                { borderColor: focusedInput === 'expMonth' ? 'blue' : '#ababab' },
+                { borderColor: focusedInput === 'cvv' ? 'blue' : '#ababab' },
               ]}
-              onFocus={() => handleFocus('expMonth')}
-              onBlur={handleBlur}
-            />
-            <TextInput
-              value={values.expYear}
-              onChangeText={(text) => handleChange('expYear', text)}
-              keyboardType="numeric"
-              placeholder="YY"
-              style={[
-                styles.textInput,
-                styles.smallInput,
-                { borderColor: focusedInput === 'expYear' ? 'blue' : '#ababab' },
-              ]}
-              onFocus={() => handleFocus('expYear')}
+              onFocus={() => handleFocus('cvv')}
               onBlur={handleBlur}
             />
           </View>
-        </View>
 
-        <View style={styles.stepContainer}>
-          <Text style={styles.textLabel}>CVV</Text>
-          <TextInput
-            value={values.cvv}
-            onChangeText={(text) => handleChange('cvv', text)}
-            keyboardType="numeric"
-            style={[
-              styles.textInput,
-              { borderColor: focusedInput === 'cvv' ? 'blue' : '#ababab' },
-            ]}
-            onFocus={() => handleFocus('cvv')}
-            onBlur={handleBlur}
-          />
-        </View>
 
+        </View>
         <Button title="Submit" onPress={() => console.log('Form submitted:', values)} />
       </View>
     </TouchableWithoutFeedback>
@@ -209,6 +211,11 @@ const styles = StyleSheet.create({
   stepContainer: {
     gap: 8,
     marginBottom: 12,
+  },
+  doubleStepContainer: {
+    gap: 8,
+    marginBottom: 24,
+    width: '48.5%',
   },
   textInput: {
     borderWidth: 1,
