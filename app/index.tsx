@@ -20,11 +20,23 @@ export default function HomeScreen() {
     return cleanedText.replace(/(\d{4})(?=\d)/g, '$1 '); //Space every 4 digits
   };
 
+  const formatCVV = (text: any) => {
+    let cleanedText = text.replace(/[^0-9]/g, ''); //digits
+
+    return cleanedText = cleanedText.slice(0, 4); // max 4 digits
+  };
+
   const handleChange = (inputName: any, text: any) => {
     if (inputName === 'cardNumber') {
       setValues((prevValues) => ({
         ...prevValues,
         [inputName]: formatCardNumber(text),
+      }));
+    }
+    else if (inputName === 'cvv') {
+      setValues((prevValues) => ({
+        ...prevValues,
+        [inputName]: formatCVV(text),
       }));
     } else {
       setValues((prevValues) => ({
