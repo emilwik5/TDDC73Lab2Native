@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Image, StyleSheet, TextInput, Text, View, Animated, TouchableWithoutFeedback, Keyboard, Button, ImageBackground } from 'react-native';
-
+import DropDownPicker from 'react-native-dropdown-picker';
 export default function HomeScreen() {
   const [values, setValues] = useState({
     cardNumber: '',
@@ -11,6 +11,20 @@ export default function HomeScreen() {
   });
   const [focusedInput, setFocusedInput] = useState(null);
   const [isCardFlipped, setIsCardFlipped] = useState(false);
+  const [monthOpen, setMonthOpen] = useState(false);
+  const [yearOpen, setYearOpen] = useState(false);
+  const [months] = useState(
+    Array.from({ length: 12 }, (_, i) => ({
+      label: (i + 1).toString().padStart(2, '0'),
+      value: (i + 1).toString().padStart(2, '0'),
+    }))
+  );
+  const [years] = useState(
+    Array.from({ length: 12 }, (_, i) => ({
+      label: (2024 + i).toString(),
+      value: (2024 + i).toString(),
+    }))
+  );
 
   const formatCardNumber = (text: any) => {
     let cleanedText = text.replace(/[^0-9]/g, ''); //digits
@@ -65,7 +79,7 @@ export default function HomeScreen() {
       <View style={styles.container}>
         {/* Card Preview */}
         <View style={styles.cardContainer}>
-        <ImageBackground source={backgroundImage} style={styles.card}>
+          <ImageBackground source={backgroundImage} style={styles.card}>
             <Animated.View style={[styles.card, isCardFlipped ? styles.cardBack : styles.cardFront]}>
               {!isCardFlipped ? (
                 <>
@@ -99,7 +113,7 @@ export default function HomeScreen() {
         </View>
 
         <View style={styles.stepContainer}>
-          <Text style={styles.textLabel}>Card Name</Text>
+          <Text style={styles.textLabel}>Card Holders</Text>
           <TextInput
             value={values.cardName}
             onChangeText={(text) => handleChange('cardName', text)}
@@ -115,35 +129,28 @@ export default function HomeScreen() {
           <View style={styles.doubleStepContainer}>
             <Text style={styles.textLabel}>Expiration Date</Text>
             <View style={styles.row}>
-              <TextInput
+              <DropDownPicker
+                open={monthOpen}
                 value={values.expMonth}
-                onChangeText={(text) => handleChange('expMonth', text)}
-                keyboardType="numeric"
-                placeholder="MM"
-                style={[
-                  styles.textInput,
-                  styles.smallInput,
-                  { borderColor: focusedInput === 'expMonth' ? 'blue' : '#ababab' },
-                ]}
-                onFocus={() => handleFocus('expMonth')}
-                onBlur={handleBlur}
+                items={months}
+                placeholder="Month"
+                setOpen={setMonthOpen}
+                setValue={(callback) => handleChange('expMonth', callback(values.expMonth))}
+                containerStyle={styles.dropdownContainer}
+                style={styles.dropdownStyle} // Apply the consistent height style
               />
-              <TextInput
+              <DropDownPicker
+                open={yearOpen}
                 value={values.expYear}
-                onChangeText={(text) => handleChange('expYear', text)}
-                keyboardType="numeric"
-                placeholder="YY"
-                style={[
-                  styles.textInput,
-                  styles.smallInput,
-                  { borderColor: focusedInput === 'expYear' ? 'blue' : '#ababab' },
-                ]}
-                onFocus={() => handleFocus('expYear')}
-                onBlur={handleBlur}
+                items={years}
+                placeholder="Year"
+                setOpen={setYearOpen}
+                setValue={(callback) => handleChange('expYear', callback(values.expYear))}
+                containerStyle={styles.dropdownContainer}
+                style={styles.dropdownStyle} // Apply the consistent height style
               />
             </View>
           </View>
-
           <View style={styles.doubleStepContainer}>
             <Text style={styles.textLabel}>CVV</Text>
             <TextInput
@@ -151,17 +158,20 @@ export default function HomeScreen() {
               onChangeText={(text) => handleChange('cvv', text)}
               keyboardType="numeric"
               style={[
-                styles.textInput,
+                styles.cvvInput,
                 { borderColor: focusedInput === 'cvv' ? 'blue' : '#ababab' },
               ]}
               onFocus={() => handleFocus('cvv')}
               onBlur={handleBlur}
             />
           </View>
-
-
         </View>
-        <Button title="Submit" onPress={() => console.log('Form submitted:', values)} />
+        <Button
+          title="Submit"
+          onPress={() => console.log('Form submitted:', values)}
+
+        />
+
       </View>
     </TouchableWithoutFeedback>
   );
@@ -183,7 +193,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     borderRadius: 10,
-    
     padding: 20,
     justifyContent: 'space-between',
   },
@@ -219,13 +228,22 @@ const styles = StyleSheet.create({
   doubleStepContainer: {
     gap: 8,
     marginBottom: 24,
-    width: '48.5%',
+    width: '65%',
   },
   textInput: {
     borderWidth: 1,
     borderRadius: 4,
     padding: 10,
     fontSize: 16,
+    height: 49,
+  },
+  cvvInput: {
+    borderWidth: 1,
+    borderRadius: 4,
+    padding: 10,
+    fontSize: 16,
+    height: 49,
+    width: '50%',
   },
   textLabel: {
     fontSize: 14,
@@ -237,5 +255,17 @@ const styles = StyleSheet.create({
   },
   smallInput: {
     flex: 1,
+  },
+  dropdownContainer: {
+    marginBottom: 24,
+    gap: 8,
+    width: '48.5%',
+    height: 49,
+  },
+  dropdownStyle: {
+    backgroundColor: '#f5f5f5',
+    borderColor: '#ababab',
+    borderRadius: 4,
+    height: 49,
   },
 });
