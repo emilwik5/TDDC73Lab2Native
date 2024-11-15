@@ -79,19 +79,40 @@ export default function HomeScreen() {
       <View style={styles.container}>
         {/* Card Preview */}
         <View style={styles.cardContainer}>
-          <ImageBackground source={backgroundImage} style={styles.card}>
+          <ImageBackground
+            source={backgroundImage}
+            style={styles.card}
+            imageStyle={{ borderRadius: 10 }}
+          >
             <Animated.View style={[styles.card, isCardFlipped ? styles.cardBack : styles.cardFront]}>
               {!isCardFlipped ? (
                 <>
+                  <View style={styles.cardRow}>
+                    <Image
+                      source={require('../assets/images/images/chip.png')}
+                      style={styles.cardLogo}
+                      resizeMode="contain"
+                    />
+
+                  </View>
                   <Text style={styles.cardNumber}>{values.cardNumber || '#### #### #### ####'}</Text>
-                  <Text style={styles.cardHolder}>{values.cardName || 'CARD HOLDER'}</Text>
-                  <Text style={styles.expiryDate}>
-                    {values.expMonth || 'MM'}/{values.expYear || 'YY'}
-                  </Text>
+                  <View>
+                    <View style={styles.cardRow}>
+                      <Text style={styles.cardLabel}>Card Holder</Text>
+                      <Text style={styles.cardLabel}>Expires</Text>
+                    </View>
+                    <View style={styles.cardRow}>
+                      <Text style={styles.cardHolder}>{values.cardName || 'CARD HOLDER'}</Text>
+                      <Text style={styles.expiryDate}>
+                        {values.expMonth || 'MM'}/{values.expYear || 'YY'}
+                      </Text>
+                    </View>
+                  </View>
                 </>
               ) : (
                 <Text style={styles.cvvText}>{values.cvv || '***'}</Text>
               )}
+
             </Animated.View>
           </ImageBackground>
         </View>
@@ -179,21 +200,22 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     padding: 20,
-    backgroundColor: '#f5f5f5',
   },
   cardContainer: {
     height: 200,
-    marginBottom: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
+    margin: 20,
   },
   card: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 10,
-    padding: 20,
+    height: '110%',
+    paddingStart: 10,
+    paddingTop: 10,
+    paddingBottom: 20,
+    justifyContent: 'space-between',
+  },
+  cardRow: {
+    flexDirection: 'row',
+    width: '90%',
     justifyContent: 'space-between',
   },
   cardFront: {
@@ -204,6 +226,13 @@ const styles = StyleSheet.create({
     transform: [{ rotateY: '180deg' }],
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  cardLabel: {
+    color: 'grey',
+  },
+  cardLogo: {
+    width: '20%',
+    marginTop: -20,
   },
   cardNumber: {
     color: '#fff',
