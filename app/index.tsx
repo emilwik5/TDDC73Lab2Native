@@ -12,14 +12,29 @@ export default function HomeScreen() {
   const [focusedInput, setFocusedInput] = useState(null);
   const [isCardFlipped, setIsCardFlipped] = useState(false);
 
-  const handleChange = (inputName : any, text : any) => {
-    setValues((prevValues) => ({
-      ...prevValues,
-      [inputName]: inputName === 'cardName' ? text : text.replace(/[^0-9]/g, ''),
-    }));
+  const formatCardNumber = (text: any) => {
+    let cleanedText = text.replace(/[^0-9]/g, ''); //digits
+
+    cleanedText = cleanedText.slice(0, 16); // max 16 digits
+
+    return cleanedText.replace(/(\d{4})(?=\d)/g, '$1 '); //Space every 4 digits
   };
 
-  const handleFocus = (inputName : any) => {
+  const handleChange = (inputName: any, text: any) => {
+    if (inputName === 'cardNumber') {
+      setValues((prevValues) => ({
+        ...prevValues,
+        [inputName]: formatCardNumber(text),
+      }));
+    } else {
+      setValues((prevValues) => ({
+        ...prevValues,
+        [inputName]: text,
+      }));
+    }
+  };
+
+  const handleFocus = (inputName: any) => {
     setFocusedInput(inputName);
     if (inputName === 'cvv') {
       setIsCardFlipped(true);
