@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Image, StyleSheet, TextInput, Text, View, Animated, TouchableWithoutFeedback, Keyboard, Button } from 'react-native';
+import { Image, StyleSheet, TextInput, Text, View, Animated, TouchableWithoutFeedback, Keyboard, Button, ImageBackground } from 'react-native';
 
 export default function HomeScreen() {
   const [values, setValues] = useState({
@@ -58,24 +58,28 @@ export default function HomeScreen() {
     setIsCardFlipped(false);
   };
 
+  const backgroundImage = require('../assets/images/images/14.jpeg');
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
         {/* Card Preview */}
         <View style={styles.cardContainer}>
-          <Animated.View style={[styles.card, isCardFlipped ? styles.cardBack : styles.cardFront]}>
-            {!isCardFlipped ? (
-              <>
-                <Text style={styles.cardNumber}>{values.cardNumber || '#### #### #### ####'}</Text>
-                <Text style={styles.cardHolder}>{values.cardName || 'CARD HOLDER'}</Text>
-                <Text style={styles.expiryDate}>
-                  {values.expMonth || 'MM'}/{values.expYear || 'YY'}
-                </Text>
-              </>
-            ) : (
-              <Text style={styles.cvvText}>{values.cvv || '***'}</Text>
-            )}
-          </Animated.View>
+        <ImageBackground source={backgroundImage} style={styles.card}>
+            <Animated.View style={[styles.card, isCardFlipped ? styles.cardBack : styles.cardFront]}>
+              {!isCardFlipped ? (
+                <>
+                  <Text style={styles.cardNumber}>{values.cardNumber || '#### #### #### ####'}</Text>
+                  <Text style={styles.cardHolder}>{values.cardName || 'CARD HOLDER'}</Text>
+                  <Text style={styles.expiryDate}>
+                    {values.expMonth || 'MM'}/{values.expYear || 'YY'}
+                  </Text>
+                </>
+              ) : (
+                <Text style={styles.cvvText}>{values.cvv || '***'}</Text>
+              )}
+            </Animated.View>
+          </ImageBackground>
         </View>
 
         {/* Form Inputs */}
@@ -177,7 +181,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     borderRadius: 10,
-    backgroundColor: '#1e1e1e',
+    
     padding: 20,
     justifyContent: 'space-between',
   },
