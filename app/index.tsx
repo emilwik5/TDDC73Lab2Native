@@ -13,6 +13,7 @@ export default function HomeScreen() {
   const [isCardFlipped, setIsCardFlipped] = useState(false);
   const [monthOpen, setMonthOpen] = useState(false);
   const [yearOpen, setYearOpen] = useState(false);
+  const [cardLogo, setCardLogo] = useState(require('../assets/images/images/visa.png'));
   const [months] = useState(
     Array.from({ length: 12 }, (_, i) => ({
       label: (i + 1).toString().padStart(2, '0'),
@@ -46,6 +47,7 @@ export default function HomeScreen() {
         ...prevValues,
         [inputName]: formatCardNumber(text),
       }));
+      handleBank(text);
     }
     else if (inputName === 'cvv') {
       setValues((prevValues) => ({
@@ -67,12 +69,34 @@ export default function HomeScreen() {
     }
   };
 
+  const handleBank = (inputNr) => {
+    const firstDigits = inputNr.replace(/\s/g, '').slice(0, 4);
+
+    if (firstDigits.startsWith('36')) {
+      setCardLogo(require('../assets/images/images/dinersclub.png'));
+    } else if (firstDigits.startsWith('35')) {
+      setCardLogo(require('../assets/images/images/jcb.png'));
+    } else if (firstDigits.startsWith('3')) {
+      setCardLogo(require('../assets/images/images/amex.png'));
+    } else if (firstDigits.startsWith('5')) {
+      setCardLogo(require('../assets/images/images/mastercard.png'));
+    } else if (firstDigits.startsWith('62')) {
+      setCardLogo(require('../assets/images/images/unionpay.png'));
+    } else if (firstDigits.startsWith('6')) {
+      setCardLogo(require('../assets/images/images/discover.png'));
+    } else if (firstDigits.startsWith('9792')) {
+      setCardLogo(require('../assets/images/images/troy.png'));
+    } else {
+      setCardLogo(require('../assets/images/images/visa.png'));
+    }
+  };
+
   const handleBlur = () => {
     setFocusedInput(null);
     setIsCardFlipped(false);
   };
 
-  const backgroundImage = require('../assets/images/images/14.jpeg');
+  const backgroundImage = require('../assets/images/images/4.jpeg');
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -93,6 +117,11 @@ export default function HomeScreen() {
                       style={styles.cardLogo}
                       resizeMode="contain"
                     />
+                    <Image
+                      source={cardLogo}
+                      style={styles.cardLogo}
+                      resizeMode="contain"
+                    />
 
                   </View>
                   <Text style={styles.cardNumber}>{values.cardNumber || '#### #### #### ####'}</Text>
@@ -102,7 +131,7 @@ export default function HomeScreen() {
                       <Text style={styles.cardLabel}>Expires</Text>
                     </View>
                     <View style={styles.cardRow}>
-                      <Text style={styles.cardHolder}>{values.cardName || 'CARD HOLDER'}</Text>
+                      <Text style={styles.cardHolder}>{values.cardName || 'FULL NAME'}</Text>
                       <Text style={styles.expiryDate}>
                         {values.expMonth || 'MM'}/{values.expYear || 'YY'}
                       </Text>
