@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Image, StyleSheet, TextInput, Text, View, Animated, TouchableWithoutFeedback, Keyboard, Button, ImageBackground } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 export default function HomeScreen() {
+
   const [values, setValues] = useState({
     cardNumber: '',
     cardName: '',
@@ -69,7 +70,7 @@ export default function HomeScreen() {
     }
   };
 
-  const handleBank = (inputNr) => {
+  const handleBank = (inputNr: any) => {
     const firstDigits = inputNr.replace(/\s/g, '').slice(0, 4);
 
     if (firstDigits.startsWith('36')) {
@@ -99,141 +100,151 @@ export default function HomeScreen() {
   const backgroundImage = require('../assets/images/images/4.jpeg');
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={styles.container}>
-        {/* Card Preview */}
-        <View style={styles.cardContainer}>
-          <ImageBackground
-            source={backgroundImage}
-            style={styles.card}
-            imageStyle={{ borderRadius: 10 }}
-          >
-            <Animated.View style={[styles.card, isCardFlipped ? styles.cardBack : styles.cardFront]}>
-              {!isCardFlipped ? (
-                <>
-                  <View style={styles.cardRow}>
-                    <Image
-                      source={require('../assets/images/images/chip.png')}
-                      style={styles.cardLogo}
-                      resizeMode="contain"
-                    />
-                    <Image
-                      source={cardLogo}
-                      style={styles.cardLogo}
-                      resizeMode="contain"
-                    />
-
-                  </View>
-                  <Text style={styles.cardNumber}>{values.cardNumber || '#### #### #### ####'}</Text>
-                  <View>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.container}>
+          {/* Card Preview */}
+          <View style={styles.cardContainer}>
+            <ImageBackground
+              source={backgroundImage}
+              style={styles.card}
+              imageStyle={{ borderRadius: 10 }}
+            >
+              <Animated.View style={[styles.card, isCardFlipped ? styles.cardBack : styles.cardFront]}>
+                {!isCardFlipped ? (
+                  <>
                     <View style={styles.cardRow}>
-                      <Text style={styles.cardLabel}>Card Holder</Text>
-                      <Text style={styles.cardLabel}>Expires</Text>
+                      <Image
+                        source={require('../assets/images/images/chip.png')}
+                        style={styles.cardLogo}
+                        resizeMode="contain"
+                      />
+                      <Image
+                        source={cardLogo}
+                        style={styles.cardLogo}
+                        resizeMode="contain"
+                      />
                     </View>
-                    <View style={styles.cardRow}>
-                      <Text style={styles.cardHolder}>{values.cardName || 'FULL NAME'}</Text>
-                      <Text style={styles.expiryDate}>
-                        {values.expMonth || 'MM'}/{values.expYear || 'YY'}
-                      </Text>
+                    <Text style={styles.cardNumber}>{values.cardNumber || '#### #### #### ####'}</Text>
+                    <View>
+                      <View style={styles.cardRow}>
+                        <Text style={styles.cardLabel}>Card Holder</Text>
+                        <Text style={styles.cardLabel}>Expires</Text>
+                      </View>
+                      <View style={styles.cardRow}>
+                        <Text style={styles.cardHolder}>{values.cardName || 'FULL NAME'}</Text>
+                        <Text style={styles.expiryDate}>
+                          {values.expMonth || 'MM'}/{values.expYear || 'YY'}
+                        </Text>
+                      </View>
                     </View>
-                  </View>
-                </>
-              ) : (
-                <Text style={styles.cvvText}>{values.cvv || '***'}</Text>
-              )}
-
-            </Animated.View>
-          </ImageBackground>
-        </View>
-
-        {/* Form Inputs */}
-        <View style={styles.stepContainer}>
-          <Text style={styles.textLabel}>Card Number</Text>
-          <TextInput
-            value={values.cardNumber}
-            onChangeText={(text) => handleChange('cardNumber', text)}
-            keyboardType="numeric"
-            style={[
-              styles.textInput,
-              { borderColor: focusedInput === 'cardNumber' ? 'blue' : '#ababab' },
-            ]}
-            onFocus={() => handleFocus('cardNumber')}
-            onBlur={handleBlur}
-          />
-        </View>
-
-        <View style={styles.stepContainer}>
-          <Text style={styles.textLabel}>Card Holders</Text>
-          <TextInput
-            value={values.cardName}
-            onChangeText={(text) => handleChange('cardName', text)}
-            style={[
-              styles.textInput,
-              { borderColor: focusedInput === 'cardName' ? 'blue' : '#ababab' },
-            ]}
-            onFocus={() => handleFocus('cardName')}
-            onBlur={handleBlur}
-          />
-        </View>
-        <View style={styles.row}>
-          <View style={styles.doubleStepContainer}>
-            <Text style={styles.textLabel}>Expiration Date</Text>
-            <View style={styles.row}>
-              <DropDownPicker
-                open={monthOpen}
-                value={values.expMonth}
-                items={months}
-                placeholder="Month"
-                setOpen={setMonthOpen}
-                setValue={(callback) => handleChange('expMonth', callback(values.expMonth))}
-                containerStyle={styles.dropdownContainer}
-                style={styles.dropdownStyle} // Apply the consistent height style
-              />
-              <DropDownPicker
-                open={yearOpen}
-                value={values.expYear}
-                items={years}
-                placeholder="Year"
-                setOpen={setYearOpen}
-                setValue={(callback) => handleChange('expYear', callback(values.expYear))}
-                containerStyle={styles.dropdownContainer}
-                style={styles.dropdownStyle} // Apply the consistent height style
+                  </>
+                ) : (
+                  <Text style={styles.cvvText}>{values.cvv || '***'}</Text>
+                )}
+              </Animated.View>
+            </ImageBackground>
+          </View>
+    
+          {/* White Container with Shadow */}
+          <View style={styles.formContainer}>
+            <View style={styles.stepContainer}>
+              <Text style={styles.textLabel}>Card Number</Text>
+              <TextInput
+                value={values.cardNumber}
+                onChangeText={(text) => handleChange('cardNumber', text)}
+                keyboardType="numeric"
+                style={[
+                  styles.textInput,
+                  { borderColor: focusedInput === 'cardNumber' ? 'blue' : '#ababab' },
+                ]}
+                onFocus={() => handleFocus('cardNumber')}
+                onBlur={handleBlur}
               />
             </View>
-          </View>
-          <View style={styles.doubleStepContainer}>
-            <Text style={styles.textLabel}>CVV</Text>
-            <TextInput
-              value={values.cvv}
-              onChangeText={(text) => handleChange('cvv', text)}
-              keyboardType="numeric"
-              style={[
-                styles.cvvInput,
-                { borderColor: focusedInput === 'cvv' ? 'blue' : '#ababab' },
-              ]}
-              onFocus={() => handleFocus('cvv')}
-              onBlur={handleBlur}
+    
+            <View style={styles.stepContainer}>
+              <Text style={styles.textLabel}>Card Holders</Text>
+              <TextInput
+                value={values.cardName}
+                onChangeText={(text) => handleChange('cardName', text)}
+                style={[
+                  styles.textInput,
+                  { borderColor: focusedInput === 'cardName' ? 'blue' : '#ababab' },
+                ]}
+                onFocus={() => handleFocus('cardName')}
+                onBlur={handleBlur}
+              />
+            </View>
+    
+            <View style={styles.row}>
+              <View style={styles.doubleStepContainer}>
+                <Text style={styles.textLabel}>Expiration Date</Text>
+                <View style={styles.row}>
+                  <DropDownPicker
+                    open={monthOpen}
+                    value={values.expMonth}
+                    items={months}
+                    placeholder="Month"
+                    setOpen={setMonthOpen}
+                    setValue={(callback) => handleChange('expMonth', callback(values.expMonth))}
+                    containerStyle={styles.dropdownContainer}
+                    style={styles.dropdownStyle}
+                  />
+                  <DropDownPicker
+                    open={yearOpen}
+                    value={values.expYear}
+                    items={years}
+                    placeholder="Year"
+                    setOpen={setYearOpen}
+                    setValue={(callback) => handleChange('expYear', callback(values.expYear))}
+                    containerStyle={styles.dropdownContainer}
+                    style={styles.dropdownStyle}
+                  />
+                </View>
+              </View>
+              <View style={styles.doubleStepContainer}>
+                <Text style={styles.textLabel}>CVV</Text>
+                <TextInput
+                  value={values.cvv}
+                  onChangeText={(text) => handleChange('cvv', text)}
+                  keyboardType="numeric"
+                  style={[
+                    styles.cvvInput,
+                    { borderColor: focusedInput === 'cvv' ? 'blue' : '#ababab' },
+                  ]}
+                  onFocus={() => handleFocus('cvv')}
+                  onBlur={handleBlur}
+                />
+              </View>
+            </View>
+    
+            <Button
+              title="Submit"
+              onPress={() => console.log('Form submitted:', values)}
             />
           </View>
         </View>
-        <Button
-          title="Submit"
-          onPress={() => console.log('Form submitted:', values)}
-
-        />
-
-      </View>
-    </TouchableWithoutFeedback>
-  );
+      </TouchableWithoutFeedback>
+    );    
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     padding: 20,
+    backgroundColor: '#add8e6', 
   },
   cardContainer: {
     height: 200,
     margin: 20,
+    position: 'absolute',
+    zIndex: 1,
+    right: 20,
+    shadowColor: '#000', 
+    shadowOffset: { width: 0, height: 2 }, 
+    shadowOpacity: 0.25, 
+    shadowRadius: 4,
+    elevation: 5, 
   },
   card: {
     height: '110%',
@@ -279,6 +290,19 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
   },
+  formContainer: {
+    backgroundColor: '#fff', 
+    borderRadius: 10,
+    padding: 20,
+    paddingTop: 100,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 5, 
+    marginVertical: 20,
+    marginTop: 120,
+  },
   stepContainer: {
     gap: 8,
     marginBottom: 12,
@@ -288,12 +312,17 @@ const styles = StyleSheet.create({
     marginBottom: 24,
     width: '65%',
   },
+  row: {
+    flexDirection: 'row',
+    gap: 10,
+  },
   textInput: {
     borderWidth: 1,
     borderRadius: 4,
     padding: 10,
     fontSize: 16,
     height: 49,
+    backgroundColor: '#f9f9f9',
   },
   cvvInput: {
     borderWidth: 1,
@@ -302,17 +331,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     height: 49,
     width: '50%',
+    backgroundColor: '#f9f9f9',
   },
   textLabel: {
     fontSize: 14,
     color: '#555',
-  },
-  row: {
-    flexDirection: 'row',
-    gap: 10,
-  },
-  smallInput: {
-    flex: 1,
   },
   dropdownContainer: {
     marginBottom: 24,
