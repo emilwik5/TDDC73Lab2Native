@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Image, StyleSheet, TextInput, Text, View, Animated, TouchableWithoutFeedback, Keyboard, Button, ImageBackground } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 export default function HomeScreen() {
-
+  const [logoOpacity] = useState(new Animated.Value(1));
   const [values, setValues] = useState({
     cardNumber: '',
     cardName: '',
@@ -29,28 +29,30 @@ export default function HomeScreen() {
   );
 
   const formatCardNumber = (text: any) => {
-    let cleanedText = text.replace(/[^0-9]/g, ''); //digits
+    let cleanedText = text.replace(/[^0-9]/g, ''); 
 
-    cleanedText = cleanedText.slice(0, 16); // max 16 digits
+    cleanedText = cleanedText.slice(0, 16); 
 
-    return cleanedText.replace(/(\d{4})(?=\d)/g, '$1 '); //Space every 4 digits
+    return cleanedText.replace(/(\d{4})(?=\d)/g, '$1 '); 
   };
 
   const formatCVV = (text: any) => {
-    let cleanedText = text.replace(/[^0-9]/g, ''); //digits
+    let cleanedText = text.replace(/[^0-9]/g, ''); 
 
-    return cleanedText = cleanedText.slice(0, 4); // max 4 digits
+    return cleanedText = cleanedText.slice(0, 4); 
   };
 
-  const handleChange = (inputName: any, text: any) => {
+  const handleChange = (inputName: string, text: string) => {
     if (inputName === 'cardNumber') {
+      const formattedNumber = formatCardNumber(text);
+  
       setValues((prevValues) => ({
         ...prevValues,
-        [inputName]: formatCardNumber(text),
+        [inputName]: formattedNumber,
       }));
+  
       handleBank(text);
-    }
-    else if (inputName === 'cvv') {
+    } else if (inputName === 'cvv') {
       setValues((prevValues) => ({
         ...prevValues,
         [inputName]: formatCVV(text),
@@ -62,7 +64,7 @@ export default function HomeScreen() {
       }));
     }
   };
-
+  
   const handleFocus = (inputName: any) => {
     setFocusedInput(inputName);
     if (inputName === 'cvv') {
@@ -70,26 +72,39 @@ export default function HomeScreen() {
     }
   };
 
-  const handleBank = (inputNr: any) => {
+  const handleBank = (inputNr: string) => {
     const firstDigits = inputNr.replace(/\s/g, '').slice(0, 4);
 
-    if (firstDigits.startsWith('36')) {
-      setCardLogo(require('../assets/images/images/dinersclub.png'));
-    } else if (firstDigits.startsWith('35')) {
-      setCardLogo(require('../assets/images/images/jcb.png'));
-    } else if (firstDigits.startsWith('3')) {
-      setCardLogo(require('../assets/images/images/amex.png'));
-    } else if (firstDigits.startsWith('5')) {
-      setCardLogo(require('../assets/images/images/mastercard.png'));
-    } else if (firstDigits.startsWith('62')) {
-      setCardLogo(require('../assets/images/images/unionpay.png'));
-    } else if (firstDigits.startsWith('6')) {
-      setCardLogo(require('../assets/images/images/discover.png'));
-    } else if (firstDigits.startsWith('9792')) {
-      setCardLogo(require('../assets/images/images/troy.png'));
-    } else {
-      setCardLogo(require('../assets/images/images/visa.png'));
-    }
+    Animated.timing(logoOpacity, {
+      toValue: 0, 
+      duration: 200, 
+      useNativeDriver: true, 
+    }).start(() => {
+      
+      if (firstDigits.startsWith('36')) {
+        setCardLogo(require('../assets/images/images/dinersclub.png'));
+      } else if (firstDigits.startsWith('35')) {
+        setCardLogo(require('../assets/images/images/jcb.png'));
+      } else if (firstDigits.startsWith('3')) {
+        setCardLogo(require('../assets/images/images/amex.png'));
+      } else if (firstDigits.startsWith('5')) {
+        setCardLogo(require('../assets/images/images/mastercard.png'));
+      } else if (firstDigits.startsWith('62')) {
+        setCardLogo(require('../assets/images/images/unionpay.png'));
+      } else if (firstDigits.startsWith('6')) {
+        setCardLogo(require('../assets/images/images/discover.png'));
+      } else if (firstDigits.startsWith('9792')) {
+        setCardLogo(require('../assets/images/images/troy.png'));
+      } else {
+        setCardLogo(require('../assets/images/images/visa.png'));
+      }
+
+      Animated.timing(logoOpacity, {
+        toValue: 1, 
+        duration: 200,
+        useNativeDriver: true, 
+      }).start();
+    });
   };
 
   const handleBlur = () => {
@@ -102,7 +117,6 @@ export default function HomeScreen() {
   return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
-          {/* Card Preview */}
           <View style={styles.cardContainer}>
             <ImageBackground
               source={backgroundImage}
@@ -118,9 +132,9 @@ export default function HomeScreen() {
                         style={styles.cardLogo}
                         resizeMode="contain"
                       />
-                      <Image
+                      <Animated.Image
                         source={cardLogo}
-                        style={styles.cardLogo}
+                        style={[styles.cardLogo, {opacity: logoOpacity}]}
                         resizeMode="contain"
                       />
                     </View>
@@ -144,8 +158,7 @@ export default function HomeScreen() {
               </Animated.View>
             </ImageBackground>
           </View>
-    
-          {/* White Container with Shadow */}
+
           <View style={styles.formContainer}>
             <View style={styles.stepContainer}>
               <Text style={styles.textLabel}>Card Number</Text>
@@ -236,10 +249,11 @@ const styles = StyleSheet.create({
   },
   cardContainer: {
     height: 200,
+    width: 300,
     margin: 20,
     position: 'absolute',
     zIndex: 1,
-    right: 20,
+    right: 32,
     shadowColor: '#000', 
     shadowOffset: { width: 0, height: 2 }, 
     shadowOpacity: 0.25, 
@@ -271,8 +285,11 @@ const styles = StyleSheet.create({
     color: 'grey',
   },
   cardLogo: {
-    width: '20%',
-    marginTop: -20,
+    width: 50, 
+    height: 30, 
+    resizeMode: 'contain', 
+    alignSelf: 'flex-end', 
+    marginRight: 10, 
   },
   cardNumber: {
     color: '#fff',
