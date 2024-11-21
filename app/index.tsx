@@ -15,6 +15,46 @@ export default function HomeScreen() {
   const [monthOpen, setMonthOpen] = useState(false);
   const [yearOpen, setYearOpen] = useState(false);
   const [cardLogo, setCardLogo] = useState(require('../assets/images/images/visa.png'));
+
+  const getCardSegments = (number: string, type: string): string[] => {
+    let segments = [];
+    const rawNumber = number.replace(/\D/g, ''); 
+
+    if (type === 'amex') {
+      // amex
+      segments = [
+        rawNumber.slice(0, 4).padEnd(4, '#'),
+        rawNumber.slice(4, 10).padEnd(6, '#'),
+        rawNumber.slice(10, 15).padEnd(5, '#'),
+      ];
+    } else {
+      // standard
+      segments = [
+        rawNumber.slice(0, 4).padEnd(4, '#'),
+        rawNumber.slice(4, 8).padEnd(4, '#'),
+        rawNumber.slice(8, 12).padEnd(4, '#'),
+        rawNumber.slice(12, 16).padEnd(4, '#'),
+      ];
+    }
+    return segments;
+  }
+
+  const getCardType = (number: string): string => {
+    if (/^3[47]/.test(number)) return 'amex'; 
+    return 'default'; 
+  };
+
+  const handleCardNumberDisplay = (number: string) => {
+    const cardType = getCardType(number);
+    return getCardSegments(number, cardType).join(' '); 
+  };
+
+  const displayedCardNumber = handleCardNumberDisplay(values.cardNumber);
+
+  const getUppercaseCardName = (name: string): string => {
+    return name.toUpperCase();
+  };
+  
   const [months] = useState(
     Array.from({ length: 12 }, (_, i) => ({
       label: (i + 1).toString().padStart(2, '0'),
@@ -24,38 +64,24 @@ export default function HomeScreen() {
   const [years] = useState(
     Array.from({ length: 12 }, (_, i) => ({
       label: (2024 + i).toString(),
-      value: (2024 + i).toString(),
+      value: (24 + i).toString(),
     }))
   );
 
-  const formatCardNumber = (text: any) => {
-    let cleanedText = text.replace(/[^0-9]/g, ''); 
-
-    cleanedText = cleanedText.slice(0, 16); 
-
-    return cleanedText.replace(/(\d{4})(?=\d)/g, '$1 '); 
-  };
-
-  const formatCVV = (text: any) => {
-    let cleanedText = text.replace(/[^0-9]/g, ''); 
-
-    return cleanedText = cleanedText.slice(0, 4); 
-  };
-
   const handleChange = (inputName: string, text: string) => {
     if (inputName === 'cardNumber') {
-      const formattedNumber = formatCardNumber(text);
+      const formattedNumber = text.replace(/[^0-9]/g, '').slice(0, 16); 
   
       setValues((prevValues) => ({
         ...prevValues,
         [inputName]: formattedNumber,
       }));
   
-      handleBank(text);
+      handleBank(formattedNumber); 
     } else if (inputName === 'cvv') {
       setValues((prevValues) => ({
         ...prevValues,
-        [inputName]: formatCVV(text),
+        [inputName]: text.replace(/[^0-9]/g, '').slice(0, 4), 
       }));
     } else {
       setValues((prevValues) => ({
@@ -85,7 +111,7 @@ export default function HomeScreen() {
         setCardLogo(require('../assets/images/images/dinersclub.png'));
       } else if (firstDigits.startsWith('35')) {
         setCardLogo(require('../assets/images/images/jcb.png'));
-      } else if (firstDigits.startsWith('3')) {
+      } else if (firstDigits.startsWith('34')) {
         setCardLogo(require('../assets/images/images/amex.png'));
       } else if (firstDigits.startsWith('5')) {
         setCardLogo(require('../assets/images/images/mastercard.png'));
@@ -138,14 +164,14 @@ export default function HomeScreen() {
                         resizeMode="contain"
                       />
                     </View>
-                    <Text style={styles.cardNumber}>{values.cardNumber || '#### #### #### ####'}</Text>
+                    <Text style={styles.cardNumber}>{displayedCardNumber}</Text>
                     <View>
                       <View style={styles.cardRow}>
                         <Text style={styles.cardLabel}>Card Holder</Text>
                         <Text style={styles.cardLabel}>Expires</Text>
                       </View>
                       <View style={styles.cardRow}>
-                        <Text style={styles.cardHolder}>{values.cardName || 'FULL NAME'}</Text>
+                        <Text style={styles.cardHolder}>{values.cardName ? getUppercaseCardName(values.cardName) : 'FULL NAME'}</Text>
                         <Text style={styles.expiryDate}>
                           {values.expMonth || 'MM'}/{values.expYear || 'YY'}
                         </Text>
