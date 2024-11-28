@@ -21,19 +21,19 @@ export default function HomeScreen() {
     const rawNumber = number.replace(/\D/g, ''); 
 
     if (type === 'amex') {
-      // amex
+      // Amex
       segments = [
-        rawNumber.slice(0, 4).padEnd(4, '#'),
-        rawNumber.slice(4, 10).padEnd(6, '#'),
-        rawNumber.slice(10, 15).padEnd(5, '#'),
+        rawNumber.slice(0, 4).padEnd(4, '#'), 
+        rawNumber.slice(4, 10).replace(/./g, '*').padEnd(6, '#'), 
+        rawNumber.slice(10, 15).padEnd(5, '#'), 
       ];
     } else {
-      // standard
+      // Standard
       segments = [
-        rawNumber.slice(0, 4).padEnd(4, '#'),
-        rawNumber.slice(4, 8).padEnd(4, '#'),
-        rawNumber.slice(8, 12).padEnd(4, '#'),
-        rawNumber.slice(12, 16).padEnd(4, '#'),
+        rawNumber.slice(0, 4).padEnd(4, '#'), 
+        rawNumber.slice(4, 8).replace(/./g, '*').padEnd(4, '#'), 
+        rawNumber.slice(8, 12).replace(/./g, '*').padEnd(4, '#'), 
+        rawNumber.slice(12, 16).padEnd(4, '#'), 
       ];
     }
     return segments;
@@ -81,7 +81,7 @@ export default function HomeScreen() {
     } else if (inputName === 'cvv') {
       setValues((prevValues) => ({
         ...prevValues,
-        [inputName]: text.replace(/[^0-9]/g, '').slice(0, 4), 
+        [inputName]: text.replace(/[^0-9]/g, '').slice(0, 3), 
       }));
     } else {
       setValues((prevValues) => ({
@@ -138,7 +138,7 @@ export default function HomeScreen() {
     setIsCardFlipped(false);
   };
 
-  const backgroundImage = require('../assets/images/images/4.jpeg');
+  const backgroundImage = require('../assets/images/images/18.jpeg');
 
   return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -149,7 +149,7 @@ export default function HomeScreen() {
               style={styles.card}
               imageStyle={{ borderRadius: 10 }}
             >
-              <Animated.View style={[styles.card, isCardFlipped ? styles.cardBack : styles.cardFront]}>
+              <View style={[styles.card, isCardFlipped ? styles.cardBack : styles.cardFront]}>
                 {!isCardFlipped ? (
                   <>
                     <View style={styles.cardRow}>
@@ -179,9 +179,19 @@ export default function HomeScreen() {
                     </View>
                   </>
                 ) : (
-                  <Text style={styles.cvvText}>{values.cvv || '***'}</Text>
-                )}
-              </Animated.View>
+                <View style = {{zIndex: 1}}>
+                  <View style={styles.blackBar}></View>
+                    <View style={styles.whiteBar}>
+                      <Text>{values.cvv}</Text>
+                    </View>
+                    <Animated.Image
+                      source={cardLogo} 
+                      style={styles.cardLogoBack} 
+                      resizeMode="contain"
+                    />
+                  </View>
+              )}
+            </View>
             </ImageBackground>
           </View>
 
@@ -202,7 +212,7 @@ export default function HomeScreen() {
             </View>
     
             <View style={styles.stepContainer}>
-              <Text style={styles.textLabel}>Card Holders</Text>
+              <Text style={styles.textLabel}>Card Holder</Text>
               <TextInput
                 value={values.cardName}
                 onChangeText={(text) => handleChange('cardName', text)}
@@ -299,13 +309,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   cardFront: {
-    backfaceVisibility: 'hidden',
   },
   cardBack: {
-    backfaceVisibility: 'hidden',
-    transform: [{ rotateY: '180deg' }],
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: 'flex-start',
+    padding: 10,
+    flex: 1
   },
   cardLabel: {
     color: 'grey',
@@ -330,8 +338,40 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   cvvText: {
-    color: '#fff',
-    fontSize: 18,
+    color: '#000', 
+    fontSize: 20, 
+    fontWeight: 'bold', 
+    paddingInlineEnd: 20 
+  },
+  blackBar: {
+    height: 40, 
+    width: '111%',
+    marginRight: 10,
+    backgroundColor: '#000', 
+    marginHorizontal: -20, 
+    marginTop: 15,
+    borderRadius: 5,
+    zIndex: 1,
+  },
+  whiteBar: {
+    height: 30, 
+    backgroundColor: '#fff', 
+    right: 5,
+    marginTop: 30, 
+    justifyContent: 'center', 
+    alignItems: 'flex-end', 
+    paddingRight: 5,
+    borderRadius: 5, 
+    zIndex: 2,
+  },
+  cardLogoBack: {
+    position: 'absolute', 
+    marginVertical: -60,
+    bottom: 1, 
+    right: 15, 
+    width: 60, 
+    height: 40,
+    resizeMode: 'contain', 
   },
   formContainer: {
     backgroundColor: '#fff', 
